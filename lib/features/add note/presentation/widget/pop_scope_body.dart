@@ -13,7 +13,6 @@ class PopScopeBody extends StatelessWidget {
     this.onChangedContent,
     required this.contentController,
     this.focusNode,
-    //   this.pageTitle,
     this.note,
   });
 
@@ -24,19 +23,11 @@ class PopScopeBody extends StatelessWidget {
   final Function(String)? onChangedContent;
   final TextEditingController contentController;
   final FocusNode? focusNode;
-  //final String? pageTitle;
   final NoteModel? note;
   @override
   Widget build(BuildContext context) {
-    //  bool isTitleChanged = false;
-    //  bool isContentChanged = false;
-    // if(note != null) {
-    // isTitleChanged = titleController.text == note!.noteTitle;
-    // isContentChanged = contentController.text == note!.noteContent;
-    // }
     return GestureDetector(
       onTap: onTap,
-      //requestFocus,
       child: Column(
         children: [
           SizedBox(height: 25),
@@ -45,16 +36,8 @@ class PopScopeBody extends StatelessWidget {
             child: NoteAppBar(
               controller: titleController,
               onPressed: onPressed,
-              //pageTitle: pageTitle,
               note: note,
-              //  () {
-              //   saveNoteLogic(context);
-              // },
               onChanged: onChangedTitle,
-              //  (value) {
-              //   title = value;
-              //   log(title);
-              // },
             ),
           ),
 
@@ -64,11 +47,6 @@ class PopScopeBody extends StatelessWidget {
               child: CustomTextField(
                 controller: contentController,
                 onChanged: onChangedContent,
-
-                // (value) {
-                //   content = value;
-                //   log(content);
-                // },
                 focusNode: focusNode,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
@@ -79,6 +57,5 @@ class PopScopeBody extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

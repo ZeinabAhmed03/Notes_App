@@ -10,11 +10,14 @@ part 'fetch_notes_state.dart';
 
 class FetchNotesCubit extends Cubit<FetchNotesState> {
   FetchNotesCubit() : super(FetchNotesInitial());
-
+  List<NoteModel>? allNotes;
+  List<NoteModel>? filteredNotes;
+  String? query = '';
   void fetchNotes() {
     var notesBox = Hive.box<NoteModel>(knoteBox);
-    List<NoteModel> notes = notesBox.values.toList();
-    log('there is ${notes.length} note in the box');
-    emit(FetchNotesSuccess(notes: notes));
+    allNotes = notesBox.values.toList();
+    filteredNotes = allNotes;
+    log('there is ${allNotes!.length} note in the box');
+    emit(FetchNotesSuccess());
   }
 }

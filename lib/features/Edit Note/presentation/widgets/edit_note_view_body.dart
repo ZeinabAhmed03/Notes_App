@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
 import 'package:notes_app/features/Show%20Notes/presentation/view%20model/cubit/fetch_notes_cubit.dart';
-import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20Note%20Cubit/add_note_cubit.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/pop_scope_body.dart';
 
 class EditNoteViewBody extends StatefulWidget {
@@ -19,7 +18,6 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
   late String title;
   late String content;
   NoteModel? noteModel;
-  //bool isTitleChange = false;
   late FocusNode focusNode;
   late TextEditingController titleController;
   late TextEditingController contentController;
@@ -78,8 +76,6 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
         return await isNoteChangedLogic(context);
       },
       child: PopScopeBody(
-        //note: widget.note,
-        // pageTitle: widget.pageTitle,
         titleController: titleController,
         contentController: contentController,
         onChangedContent: (value) {

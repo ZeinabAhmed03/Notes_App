@@ -8,12 +8,7 @@ import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20No
 import 'package:notes_app/features/add%20note/presentation/widget/pop_scope_body.dart';
 
 class AddNoteViewBody extends StatefulWidget {
-  const AddNoteViewBody({
-    super.key,
-    //this.pageTitle = '',
-    this.note,
-  });
-  //final String? pageTitle;
+  const AddNoteViewBody({super.key, this.note});
   final NoteModel? note;
   @override
   State<AddNoteViewBody> createState() => _AddNoteViewBodyState();
@@ -23,7 +18,6 @@ class _AddNoteViewBodyState extends State<AddNoteViewBody> {
   String title = 'No Title';
   String content = '';
   dynamic noteModel;
-  //bool isTitleChange = false;
   late FocusNode focusNode;
   late TextEditingController titleController;
   late TextEditingController contentController;
@@ -80,7 +74,6 @@ class _AddNoteViewBodyState extends State<AddNoteViewBody> {
       },
       child: PopScopeBody(
         note: widget.note,
-        // pageTitle: widget.pageTitle,
         titleController: titleController,
         contentController: contentController,
         onChangedContent: (value) {

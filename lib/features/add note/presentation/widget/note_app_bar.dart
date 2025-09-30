@@ -9,13 +9,11 @@ class NoteAppBar extends StatelessWidget {
     required this.controller,
     this.onChanged,
     this.onPressed,
-    // required this.pageTitle,
     this.note,
   });
   final TextEditingController controller;
   final void Function()? onPressed;
   final Function(String)? onChanged;
-  //final String? pageTitle;
   final NoteModel? note;
   @override
   Widget build(BuildContext context) {
@@ -40,23 +38,6 @@ class NoteAppBar extends StatelessWidget {
           },
           icon: Icon(Icons.delete, color: Colors.white, size: 25),
         ),
-        //     if (pageTitle == 'Edit Note')
-        //       Row(
-        //         children: [
-        //           IconButton(
-        //             onPressed: () {
-        //               if (note != null) alertDialog(context, note!);
-        //             },
-        //             icon: Icon(Icons.delete, color: Colors.white, size: 25),
-        //           ),
-        //           IconButton(
-        //             onPressed: () {
-        //               //alertDialog(context);
-        //             },
-        //             icon: Icon(Icons.edit, color: Colors.white, size: 25),
-        //           ),
-        //         ],
-        //       ),
       ],
     );
   }
