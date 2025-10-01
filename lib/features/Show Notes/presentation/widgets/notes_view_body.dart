@@ -1,10 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
 import 'package:notes_app/features/Show%20Notes/presentation/view%20model/cubit/fetch_notes_cubit.dart';
-import 'package:notes_app/features/Show%20Notes/presentation/widgets/note_item.dart';
+import 'package:notes_app/features/Show%20Notes/presentation/widgets/custom_app_Bar.dart';
+import 'package:notes_app/features/Show%20Notes/presentation/widgets/notes_empty_logic.dart';
+import 'package:notes_app/features/Show%20Notes/presentation/widgets/notes_grid_view.dart';
 
 class NotesViewBody extends StatefulWidget {
   const NotesViewBody({super.key});
@@ -75,31 +76,10 @@ class _NotesViewBodyState extends State<NotesViewBody> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppBar(
-          title:
-              isSearching
-                  ? SizedBox(
-                    height: 50,
-                    child: TextField(
-                      autofocus: true,
-                      controller: searchController,
-                      cursorColor: Colors.white,
-                      decoration: customInputDecoration(),
-                    ),
-                  )
-                  : Text('Notes', style: TextStyle(fontSize: 25)),
-          actions: [
-            IconButton(
-              onPressed: () {
-                toggleSearch();
-              },
-              icon: Icon(
-                isSearching ? Icons.close : Icons.search,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
-          ],
+        CustomAppBar(
+          onPressed: toggleSearch,
+          searchController: searchController,
+          isSearching: isSearching,
         ),
 
         BlocBuilder<FetchNotesCubit, FetchNotesState>(
@@ -109,47 +89,13 @@ class _NotesViewBodyState extends State<NotesViewBody> {
                   BlocProvider.of<FetchNotesCubit>(context).filteredNotes!;
               String query = BlocProvider.of<FetchNotesCubit>(context).query!;
               return notes.isNotEmpty
-                  ? Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                        mainAxisExtent: 300,
-                      ),
-                      itemBuilder:
-                          (context, index) => NoteItem(
-                            note: (notes.reversed.toList())[index],
-                            query: query,
-                          ),
-                      itemCount: notes.length,
-                    ),
-                  )
-                  : Center(
-                    child: Text('No notes found, Create your first note'),
-                  );
+                  ? Expanded(child: NotesGridView(notes: notes, query: query))
+                  : NotesEmptyLogic(query: query);
             }
             return Center(child: Text('There is an error, try later'));
           },
         ),
       ],
-    );
-  }
-
-  InputDecoration customInputDecoration() {
-    return InputDecoration(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.white),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.white),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.white),
-      ),
     );
   }
 }
