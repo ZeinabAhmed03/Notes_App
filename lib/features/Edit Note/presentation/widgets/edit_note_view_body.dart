@@ -77,6 +77,7 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
       },
       child: PopScopeBody(
         titleController: titleController,
+        note: widget.note,
         contentController: contentController,
         onChangedContent: (value) {
           content = value;

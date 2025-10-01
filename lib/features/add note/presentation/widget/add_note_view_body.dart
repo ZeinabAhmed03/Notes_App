@@ -43,7 +43,7 @@ class _AddNoteViewBodyState extends State<AddNoteViewBody> {
         noteTitle: titleController.text.isEmpty ? title : titleController.text,
         noteContent: contentController.text,
         date: DateFormat('MMM dd,yyyy').format(DateTime.now()),
-        color: Colors.orange.shade100.toARGB32(),
+        color: BlocProvider.of<AddNoteCubit>(context).noteColor,
       );
       BlocProvider.of<AddNoteCubit>(context).addNote(noteModel);
       BlocProvider.of<FetchNotesCubit>(context).fetchNotes();

@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes_app/constants.dart';
 import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
+import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20Note%20Cubit/add_note_cubit.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/alert_dialog.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/custom_text_field.dart';
 
-class NoteAppBar extends StatelessWidget {
+class NoteAppBar extends StatefulWidget {
   const NoteAppBar({
     super.key,
     required this.controller,
@@ -15,29 +20,145 @@ class NoteAppBar extends StatelessWidget {
   final void Function()? onPressed;
   final Function(String)? onChanged;
   final NoteModel? note;
+
+  @override
+  State<NoteAppBar> createState() => _NoteAppBarState();
+}
+
+class _NoteAppBarState extends State<NoteAppBar> {
+  late bool isSelected;
+  late bool isSameColor;
+  late int selectedColor;
+  late int storedColor;
+  late List<Color> colors;
+
+  @override
+  void initState() {
+    isSelected = false;
+    isSameColor = true;
+    selectedColor = kColors[0].toARGB32();
+    storedColor = BlocProvider.of<AddNoteCubit>(context).noteColor;
+    colors = kColors;
+    super.initState();
+  }
+
+  void pickNoteColor(BuildContext context) {
+    showPickColorDialog(context);
+  }
+
+  Future<dynamic> showPickColorDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (
+            BuildContext context,
+            void Function(void Function()) setState,
+          ) {
+            return AlertDialog(
+              content: Text('Pick Note Color'),
+              actions: [
+                SizedBox(
+                  height: 50,
+                  width: 290,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: colors.length,
+                    itemBuilder: (context, index) {
+                      Color color = colors[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            setState(() {
+                              isSelected = true;
+                              selectedColor = color.toARGB32();
+                              // update stored color in cubit
+                              if (selectedColor != storedColor) {
+                                BlocProvider.of<AddNoteCubit>(context)
+                                    .noteColor = selectedColor;
+                                storedColor = selectedColor;
+                              }
+                              isSameColor = selectedColor == storedColor;
+                              log(
+                                'check is stored color same as selected: {$isSameColor}',
+                              );
+                              log(
+                                'selected color is: ${colors.indexOf(Color(selectedColor))}',
+                              );
+                              log(
+                                'stored color is: ${colors.indexOf(Color(storedColor))}',
+                              );
+                            });
+                            Navigator.pop(context);
+                            log(
+                              'is selected color = color : ${(selectedColor == color.toARGB32())}',
+                            );
+                          },
+                          child:
+                              (selectedColor == color.toARGB32())
+                                  ? CircleAvatar(
+                                    backgroundColor: Colors.purple,
+                                    radius: 22,
+                                    child: CircleAvatar(
+                                      backgroundColor: color,
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  )
+                                  : CircleAvatar(backgroundColor: color),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         IconButton(
-          onPressed: onPressed,
+          onPressed: widget.onPressed,
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
-
         Expanded(
           child: CustomTextField(
-            controller: controller,
-            onChanged: onChanged,
+            controller: widget.controller,
+            onChanged: widget.onChanged,
             hint: 'Title',
           ),
         ),
         Spacer(),
-        IconButton(
-          onPressed: () {
-            if (note != null) alertDialog(context, note!);
-          },
-          icon: Icon(Icons.delete, color: Colors.white, size: 25),
-        ),
+        if (widget.note != null)
+          IconButton(
+            onPressed: () {
+              alertDialog(context, widget.note!);
+            },
+            icon: Icon(Icons.delete, color: Colors.white, size: 25),
+          ),
+
+        if (widget.note == null)
+          SizedBox(
+            height: 40,
+            width: 40,
+            child: InkWell(
+              onTap: () {
+                pickNoteColor(context);
+              },
+              child: Image.asset(kImagePath),
+            ),
+          ),
       ],
     );
   }

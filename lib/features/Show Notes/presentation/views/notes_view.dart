@@ -17,11 +17,14 @@ class NotesView extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => BlocProvider(
-                    create: (context) => AddNoteCubit(),
-                    child: AddNoteView(),
-                  ),
+              builder: (BuildContext context) {
+                return AddNoteView();
+              },
+              // builder:
+              //     (context) => BlocProvider(
+              //       create: (context) => AddNoteCubit(),
+              //       child: AddNoteView(),
+              //     ),
             ),
           );
         },
