@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
 import 'package:notes_app/features/Show%20Notes/presentation/view%20model/cubit/fetch_notes_cubit.dart';
+import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20Note%20Cubit/add_note_cubit.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/pop_scope_body.dart';
 
 class EditNoteViewBody extends StatefulWidget {
@@ -17,7 +18,6 @@ class EditNoteViewBody extends StatefulWidget {
 class _EditNoteViewBodyState extends State<EditNoteViewBody> {
   late String title;
   late String content;
-  NoteModel? noteModel;
   late FocusNode focusNode;
   late TextEditingController titleController;
   late TextEditingController contentController;
@@ -45,10 +45,10 @@ class _EditNoteViewBodyState extends State<EditNoteViewBody> {
     if (isTitleChanged || isContentChanged) {
       widget.note.noteTitle = titleController.text;
       widget.note.noteContent = contentController.text;
-      widget.note.date = DateFormat('MMM dd,yyyy').format(DateTime.now());
-      widget.note.color = Colors.orange.shade100.toARGB32();
-
+      widget.note.date = widget.note.date;
+      widget.note.color = widget.note.color;
       await widget.note.save();
+      log('saved note is ${widget.note}');
       BlocProvider.of<FetchNotesCubit>(context).fetchNotes();
       Navigator.pop(context);
     } else {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/constants.dart';
@@ -7,6 +5,7 @@ import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
 import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20Note%20Cubit/add_note_cubit.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/alert_dialog.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/custom_text_field.dart';
+import 'package:notes_app/features/add%20note/presentation/widget/color_item.dart';
 
 class NoteAppBar extends StatefulWidget {
   const NoteAppBar({
@@ -31,6 +30,7 @@ class _NoteAppBarState extends State<NoteAppBar> {
   late int selectedColor;
   late int storedColor;
   late List<Color> colors;
+  late AddNoteCubit addNoteCubit;
 
   @override
   void initState() {
@@ -39,6 +39,7 @@ class _NoteAppBarState extends State<NoteAppBar> {
     selectedColor = kColors[0].toARGB32();
     storedColor = BlocProvider.of<AddNoteCubit>(context).noteColor;
     colors = kColors;
+    addNoteCubit = BlocProvider.of<AddNoteCubit>(context);
     super.initState();
   }
 
@@ -69,48 +70,21 @@ class _NoteAppBarState extends State<NoteAppBar> {
                       Color color = colors[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: InkWell(
-                          splashColor: Colors.transparent,
+                        child: ColorItem(
+                          selectedColor: selectedColor,
+                          color: color,
                           onTap: () {
                             setState(() {
-                              isSelected = true;
                               selectedColor = color.toARGB32();
-                              // update stored color in cubit
                               if (selectedColor != storedColor) {
                                 BlocProvider.of<AddNoteCubit>(context)
                                     .noteColor = selectedColor;
                                 storedColor = selectedColor;
                               }
                               isSameColor = selectedColor == storedColor;
-                              log(
-                                'check is stored color same as selected: {$isSameColor}',
-                              );
-                              log(
-                                'selected color is: ${colors.indexOf(Color(selectedColor))}',
-                              );
-                              log(
-                                'stored color is: ${colors.indexOf(Color(storedColor))}',
-                              );
                             });
                             Navigator.pop(context);
-                            log(
-                              'is selected color = color : ${(selectedColor == color.toARGB32())}',
-                            );
                           },
-                          child:
-                              (selectedColor == color.toARGB32())
-                                  ? CircleAvatar(
-                                    backgroundColor: Colors.purple,
-                                    radius: 22,
-                                    child: CircleAvatar(
-                                      backgroundColor: color,
-                                      child: Icon(
-                                        Icons.check,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  )
-                                  : CircleAvatar(backgroundColor: color),
                         ),
                       );
                     },

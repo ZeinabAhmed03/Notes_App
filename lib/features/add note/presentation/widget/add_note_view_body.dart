@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:notes_app/constants.dart';
 import 'package:notes_app/features/Show%20Notes/data/models/note_model.dart';
 import 'package:notes_app/features/Show%20Notes/presentation/view%20model/cubit/fetch_notes_cubit.dart';
+import 'package:notes_app/features/Show%20Notes/presentation/views/notes_view.dart';
 import 'package:notes_app/features/add%20note/presentation/view%20model/Add%20Note%20Cubit/add_note_cubit.dart';
 import 'package:notes_app/features/add%20note/presentation/widget/pop_scope_body.dart';
 
@@ -21,12 +23,14 @@ class _AddNoteViewBodyState extends State<AddNoteViewBody> {
   late FocusNode focusNode;
   late TextEditingController titleController;
   late TextEditingController contentController;
+  late AddNoteCubit addNoteCubit;
 
   @override
   void initState() {
     focusNode = FocusNode();
     titleController = TextEditingController();
     contentController = TextEditingController();
+    addNoteCubit = BlocProvider.of<AddNoteCubit>(context);
     super.initState();
   }
 
@@ -43,13 +47,26 @@ class _AddNoteViewBodyState extends State<AddNoteViewBody> {
         noteTitle: titleController.text.isEmpty ? title : titleController.text,
         noteContent: contentController.text,
         date: DateFormat('MMM dd,yyyy').format(DateTime.now()),
-        color: BlocProvider.of<AddNoteCubit>(context).noteColor,
+        color: addNoteCubit.noteColor,
       );
+      log('added note is $noteModel');
+      log(
+        'noet color store in cubit is $kColors.indexOf(Color(addNoteCubit.noteColor))}',
+      );
+
       BlocProvider.of<AddNoteCubit>(context).addNote(noteModel);
       BlocProvider.of<FetchNotesCubit>(context).fetchNotes();
-      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NotesView()),
+      );
+      // Navigator.pop(context);
     } else {
-      Navigator.pop(context);
+      // Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NotesView()),
+      );
     }
   }
 
